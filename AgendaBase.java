@@ -28,6 +28,9 @@ public class AgendaBase {
         }
     }
 
+    private static final int INICIO_EXPEDIENTE = 8;
+    private static final int FIM_EXPEDIENTE = 18;
+
     static List<Agendamento> agendamentos = new ArrayList<>();
 
     public static Boolean verificarDisponibilidade(String data, int hora, String medico) {
@@ -40,7 +43,7 @@ public class AgendaBase {
     }
 
     public static Boolean validarAgendamento(int hora, int duracao) {
-        return hora >= 8 && hora < 18 && duracao > 0;
+        return hora >= INICIO_EXPEDIENTE && hora < FIM_EXPEDIENTE && duracao > 0;
     }
 
     public static void adicionar(String paciente, String medico, String data, int hora, int duracao) {
