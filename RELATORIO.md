@@ -1,5 +1,14 @@
 # RELATÓRIO — AgendaFácil
 
+## Integrantes
+
+| Nome | Matrícula |
+|---|---|
+| GUSTAVO HENRIQUE DE SOUSA SOBRAL | 20250037249 |
+| LUIZ RENAN DA SILVA PONTES | 20250031601 |
+
+**Linguagem escolhida:** Java
+
 ## Etapa 1 — Diagnóstico
 
 Diagnóstico do `AgendaBase.java` original, organizado pelas cinco categorias do checklist da Aula 2. As linhas citadas se referem ao código-base fornecido.
