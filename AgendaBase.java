@@ -10,92 +10,102 @@ import java.util.List;
 
 public class AgendaBase {
 
-    static class A {
-        String p;
-        String pr;
-        String d;
-        int h;
-        int dur;
-        String st;
+    static class Agendamento {
+        String paciente;
+        String medico;
+        String data;
+        int hora;
+        int duracao;
+        String status;
 
-        A(String p, String pr, String d, int h, int dur, String st) {
-            this.p = p;
-            this.pr = pr;
-            this.d = d;
-            this.h = h;
-            this.dur = dur;
-            this.st = st;
+        Agendamento(String paciente, String medico, String data, int hora, int duracao, String status) {
+            this.paciente = paciente;
+            this.medico = medico;
+            this.data = data;
+            this.hora = hora;
+            this.duracao = duracao;
+            this.status = status;
         }
     }
 
-    static List<A> ag = new ArrayList<>();
+    static List<Agendamento> agendamentos = new ArrayList<>();
 
-    public static void add(String p, String pr, String d, int h, int dur) {
-        // adiciona na lista
-        try {
-            if (h >= 8) {
-                if (h < 18) {
-                    if (dur > 0) {
-                        boolean ok = true;
-                        for (A a : ag) {
-                            if (a.d.equals(d) && a.h == h && a.pr.equals(pr)) {
-                                ok = false;
-                            }
-                        }
-                        if (ok) {
-                            ag.add(new A(p, pr, d, h, dur, "MARCADO"));
-                            System.out.println("Atendimento marcado para " + p);
-                        } else {
-                            System.out.println("Horario ocupado");
-                        }
-                    }
-                }
+    public static Boolean verificarDisponibilidade(String data, int hora, String medico) {
+        for (Agendamento a : agendamentos) {
+            if (a.data.equals(data) && a.hora == hora && a.medico.equals(medico)) {
+                return false;
             }
-        } catch (Exception e) {
         }
+        return true;
     }
 
-    public static void rem(String p, String d, int h, String nd, int nh) {
-        // remarca o atendimento
-        for (A a : ag) {
-            if (a.p.equals(p) && a.d.equals(d) && a.h == h) {
-                boolean ok = true;
-                for (A b : ag) {
-                    if (b.d.equals(nd) && b.h == nh && b.pr.equals(a.pr)) {
-                        ok = false;
-                    }
-                }
-                if (ok) {
-                    a.d = nd;
-                    a.h = nh;
-                    System.out.println("Remarcado");
+    public static Boolean validarAgendamento(int hora, int duracao) {
+        return hora >= 8 && hora < 18 && duracao > 0;
+    }
+
+    public static void adicionar(String paciente, String medico, String data, int hora, int duracao) {
+        try {
+            if (validarAgendamento(hora,duracao)) {
+                boolean disponivel = verificarDisponibilidade(data, hora, medico);
+                if (disponivel) {
+                    agendamentos.add(new Agendamento(paciente, medico, data, hora, duracao, "MARCADO"));
+                    System.out.println("Atendimento marcado para " + paciente);
                 } else {
                     System.out.println("Horario ocupado");
                 }
             }
+        } catch (Exception e) {
+            throw new RuntimeException("Não foi possível realizar o agendamento");
         }
     }
 
-    // public static void desmarcar(String p, String d, int h) {
-    //     ag.remove(...);
-    // }
+    private static Agendamento buscar(String paciente, String data, int hora) {
+        for (Agendamento a : agendamentos) {
+            if (a.paciente.equals(paciente) && a.data.equals(data) && a.hora == hora) {
+                return a;
+            }
+        }
+        return null;
+    }
 
-    // TODO: rever isso depois (Joao, 2025)
+    public static void remarcar(String paciente, String data, int hora, String novaData, int novaHora) {
+        Agendamento a = buscar(paciente, data, hora);
+        if (a == null) {
+            System.out.println("Agendamento nao encontrado");
+            return;
+        }
+        if (verificarDisponibilidade(novaData, novaHora, a.medico)) {
+            a.data = novaData;
+            a.hora = novaHora;
+            System.out.println("Remarcado");
+        } else {
+            System.out.println("Horario ocupado");
+        }
+    }
 
-    public static void lst(String d) {
-        // lista os atendimentos do mes
-        for (A a : ag) {
-            if (a.d.equals(d)) {
-                System.out.println(a.h + " " + a.p + " " + a.pr + " " + a.st);
+     public static void desmarcar(String paciente, String data, int hora) {
+         Agendamento a = buscar(paciente, data, hora);
+         if (a == null) {
+             System.out.println("Agendamento nao encontrado");
+         } else {
+             agendamentos.remove(a);
+         }
+     }
+
+
+    public static void listar(String data) {
+        for (Agendamento a : agendamentos) {
+            if (a.data.equals(data)) {
+                System.out.println(a.hora + " " + a.paciente + " " + a.medico + " " + a.status);
             }
         }
     }
 
     public static void main(String[] args) {
-        add("Ana", "Dr. Silva", "2026-10-05", 9, 30);
-        add("Bruno", "Dr. Silva", "2026-10-05", 9, 30);
-        add("Carla", "Dra. Souza", "2026-10-05", 14, 60);
-        rem("Ana", "2026-10-05", 9, "2026-10-06", 10);
-        lst("2026-10-05");
+        adicionar("Ana", "Dr. Silva", "2026-10-05", 9, 30);
+        adicionar("Bruno", "Dr. Silva", "2026-10-05", 9, 30);
+        adicionar("Carla", "Dra. Souza", "2026-10-05", 14, 60);
+        remarcar("Ana", "2026-10-05", 9, "2026-10-06", 10);
+        listar("2026-10-05");
     }
 }
