@@ -3,6 +3,10 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Classe principal do sistema AgendaFácil.
+ * Gerencia os agendamentos de uma clínica médica em memória.
+ */
 public class AgendaBase {
 
     static class Agendamento {
@@ -31,8 +35,8 @@ public class AgendaBase {
     static List<Agendamento> agendamentos = new ArrayList<>();
 
     /**
-     * @brief Verifica se um médico possui disponibilidade em um determinado dia e
-     *        horário.
+     * Verifica se um médico possui disponibilidade em um determinado dia e horário.
+     * 
      * @param data   Data do atendimento no formato AAAA-MM-DD.
      * @param hora   Hora de início do atendimento.
      * @param medico Nome do médico.
@@ -48,7 +52,8 @@ public class AgendaBase {
     }
 
     /**
-     * @brief Valida as regras de negócio de formato de data, duração e expediente.
+     * Valida as regras de negócio de formato de data, duração e expediente.
+     * 
      * @param data    Data do agendamento (deve ser AAAA-MM-DD).
      * @param hora    Hora de início.
      * @param duracao Duração do atendimento em minutos.
@@ -87,7 +92,8 @@ public class AgendaBase {
     }
 
     /**
-     * @brief Adiciona um novo agendamento no sistema.
+     * Adiciona um novo agendamento no sistema.
+     * 
      * @param paciente Nome do paciente.
      * @param medico   Nome do médico.
      * @param data     Data no formato AAAA-MM-DD.
@@ -105,7 +111,6 @@ public class AgendaBase {
         }
 
         agendamentos.add(new Agendamento(paciente, medico, data, hora, duracao, "MARCADO"));
-        System.out.println("Atendimento marcado para " + paciente);
     }
 
     private static Agendamento buscar(String paciente, String data, int hora) {
@@ -118,7 +123,8 @@ public class AgendaBase {
     }
 
     /**
-     * @brief Remarca um atendimento existente para uma nova data e horário.
+     * Remarca um atendimento existente para uma nova data e horário.
+     * 
      * @param paciente Nome do paciente.
      * @param data     Data atual do agendamento (AAAA-MM-DD).
      * @param hora     Hora atual do agendamento.
@@ -142,11 +148,11 @@ public class AgendaBase {
 
         a.data = novaData;
         a.hora = novaHora;
-        System.out.println("Remarcado");
     }
 
     /**
-     * @brief Desmarca (remove) um atendimento do sistema.
+     * Desmarca (remove) um atendimento do sistema.
+     * 
      * @param paciente Nome do paciente.
      * @param data     Data do agendamento (AAAA-MM-DD).
      * @param hora     Hora de início.
@@ -158,11 +164,11 @@ public class AgendaBase {
             throw new IllegalArgumentException("Agendamento não encontrado para desmarcação.");
         }
         agendamentos.remove(a);
-        System.out.println("Atendimento de " + paciente + " desmarcado.");
     }
 
     /**
-     * @brief Lista todos os atendimentos marcados para uma data específica.
+     * Lista todos os atendimentos marcados para uma data específica.
+     * 
      * @param data Data para a qual os agendamentos serão listados (AAAA-MM-DD).
      */
     public static void listar(String data) {
@@ -173,17 +179,28 @@ public class AgendaBase {
         }
     }
 
+    /**
+     * Método principal que executa a demonstração do sistema.
+     * 
+     * @param args Argumentos de linha de comando.
+     */
     public static void main(String[] args) {
         try {
             adicionar("Ana", "Dr. Silva", "2026-10-05", 9, 30);
+            System.out.println("Atendimento marcado para Ana");
+            
             adicionar("Bruno", "Dr. Silva", "2026-10-05", 9, 30);
+            System.out.println("Atendimento marcado para Bruno");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
 
         try {
             adicionar("Carla", "Dra. Souza", "2026-10-05", 14, 60);
+            System.out.println("Atendimento marcado para Carla");
+            
             remarcar("Ana", "2026-10-05", 9, "2026-10-06", 10);
+            System.out.println("Remarcado");
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
